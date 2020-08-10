@@ -59,10 +59,11 @@ class Header extends Component {
                                     <NavLink className="nav-link" to='/contactus'><span className="fa fa-address-card fa-lg"></span> Contact Us</NavLink>
                                 </NavItem>
                             </Nav>
-
+                        </Collapse>
+                        <Collapse isOpen={this.state.isModalOpen} navbar>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>
-                                    <Button outline onClick={this.toggleModal}><span className="fa fa-sign-in fa-lg"></span> Login</Button>
+                                    <Button className="btn" outline onClick={this.toggleModal}><span color="white" className="fa fa-sign-in fa-lg"> Login</span></Button>
                                 </NavItem>
                             </Nav>
                         </Collapse>

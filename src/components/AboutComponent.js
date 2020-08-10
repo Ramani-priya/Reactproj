@@ -13,8 +13,8 @@ function RenderLeader({leader }) {
                 <Media heading>
                     {leader.name}
                 </Media>
-                {leader.designation}
-                {leader.description}
+                <p>{leader.designation}</p>
+                <p>{leader.description}</p>
             </Media>
         </Media>
         );

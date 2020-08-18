@@ -1,129 +1,99 @@
 import React, { Component } from 'react';
-import {
-    Card, CardImg, CardText, CardBody,
-    CardTitle, Breadcrumb, BreadcrumbItem
-} from 'reactstrap';
+import { Card, CardImg, CardText, CardBody,
+    CardTitle, Breadcrumb, BreadcrumbItem, Button,  
+    Modal, ModalHeader, ModalBody, Label, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
-//import CommentForm from './CommentFormComponent';
-// JavaScript source code
-//import React, { Component } from 'react';
-import { Button, Form, FormGroup, FormFeedback, Modal, ModalHeader, ModalBody, Label, Input, Col } from 'reactstrap';
+import { Control, LocalForm, Errors } from 'react-redux-form';
+
+
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+const minLength = (len) => (val) => val && (val.length >= len);
+
 
 class CommentForm extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
-            authorname: '',
-            rating: 1,
-            comment: '',
-            isModalOpen: false,
-            touched: {
-                authorname: false,
-                comment: false
-            }
-        }
+            isModalOpen: false
+        };
         this.toggleModal = this.toggleModal.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);
-        this.validate = this.validate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleSubmit(event) {
+    handleSubmit(values) {
         this.toggleModal();
-        console.log(this);
-        alert("Current state is Author: " + this.state.authorname + " Comment: "
-            + this.state.comment + " Rating: " + this.state.rating );
-        
-        event.preventDefault();
+        //console.log(this);
+        alert("Current state is Author: " + values.authorname +
+            " Comment: "+ values.comment + " Rating: " + values.rating );
+    }
 
-    }
-    handleInputChange(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-        this.setState({
-            [name]: value
-        });
-    }
-    handleBlur = (field) => (evt) => {
-        this.setState({
-            touched: { ...this.state.touched, [field]: true }
-        });
-    }
     toggleModal() {
         this.setState({
             isModalOpen: !this.state.isModalOpen
         });
-    }
-    validate(authorname, comment) {
-        const errors = {
-            authorname: '',
-            comment: ''
-        }
-        if (this.state.touched.authorname && authorname.length < 2)
-            errors.authorname = "Name should contain more than 2 characters";
-        else if (this.state.touched.authorname && authorname.length > 15)
-            errors.authorname = "Name cannot have more than 15 characters";
-        if (this.state.touched.comment && comment.length < 1)
-            errors.comment = "Comment contain atleast 1 character";
-
-        return errors;
-    }
+    }         
     render() {
-        const errors = this.validate(this.state.authorname, this.state.comment);
-
         return (
             <div className="col-12">
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <Form onSubmit={this.handleSubmit}>
-                            <FormGroup>
-                                <Label htmlFor="rating"> Your Rating </Label>
-                                <Input type="select" name="rating"
-                                    value={this.state.rating}
-                                    onChange={this.handleInputChange}>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </Input>
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Label htmlFor="authorname">Your Name</Label>
-                                <Input type="text" name="authorname" id="authorname"
-                                    placeholder="Your Name"
-                                    
-                                    value={this.state.authorname}
-                                    valid={errors.authorname === ''}
-                                    invalid={errors.authorname !== ''}
-                                    onBlur={this.handleBlur('authorname')}
-                                    onChange={this.handleInputChange}
-                                    />
-                                <FormFeedback>{errors.authorname}</FormFeedback>
-                            </FormGroup>
-                           
-                            <FormGroup>
-                                <Label htmlFor="comment">Your Comment</Label>
-                                <Input type="textarea" name="comment" id="comment"
-                                    rows="10"
-                                    value={this.state.comment}
-                                    valid={errors.comment === ''}
-                                    invalid={errors.comment !== ''}
-                                    onBlur={this.handleBlur('comment')}
-                                    onChange={this.handleInputChange}
-                                    />
-                                <FormFeedback>{errors.comment}</FormFeedback>
-                            </FormGroup>
-                            <Button className="btn btn-primary" type="submit">Submit</Button>
-                        </Form>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                            <Row className="form-group">
+                                <Label className="ml-3" htmlFor="rating"> <strong>Rating</strong> </Label>
+                                <Col md={12}>
+                                    <Control.select model=".rating" name="rating" className="form-control">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </Control.select>
+                                </Col>
+                            </Row>
+        
+                            <Row className="form-group">
+                                <Label className="ml-3" htmlFor="authorname"><strong>Your Name</strong></Label>
+                                <Col md={12}>
+                                    <Control.text model=".authorname" name="authorname" id="authorname"
+                                        placeholder="Your Name" className="form-control"
+                                        validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }}
+                                        />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".authorname"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required',
+                                            minLength: 'Must be greater than 3 characters',
+                                            maxLength: 'Must be 15 characters or less'
+                                        }}
+                                        />
+                                </Col>
+                            </Row>
+                            <Row className="form-group">
+                                <Label className="ml-3" htmlFor="comment"><strong>Your Comment</strong></Label>
+                                <Col md={12}>
+                                    <Control.textarea model=".comment" name="comment" id="comment"
+                                        rows="10" className="form-control"
+                                        validators={{ required, minLength: minLength(1) }}/>
+                                    <Errors
+                                        className="text-danger"
+                                        model=".comment"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required',
+                                            minLength: 'Must be atleast 1 character'
+                                        }}
+                                        />
+                                </Col>
+                            </Row>
+                            <Button color="primary" type="submit">Submit</Button>
+                        </LocalForm>
                     </ModalBody>
                 </Modal>
-                <button className="btn" color="secondary" onClick={this.toggleModal}>Submit comment</button>
+                <button className="btn" color="secondary" onClick={this.toggleModal}><i className="fa fa-pencil" aria-hidden="true"></i> Submit comment</button>
             </div>
         );
     }
@@ -206,3 +176,90 @@ const DishDetail = (props) => {
 
 }
 export default DishDetail;
+
+
+/*
+class CommentForm extends Component {
+
+
+
+function RenderDish({ dish }) {
+
+    if (dish != null) {
+        return (
+            <Card>
+                <CardImg width="100%" src={dish.image} alt={dish.name} />
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>
+            </Card>
+        );
+    }
+    else {
+        return (
+            <div></div>
+        )
+    }
+}
+
+function RenderComments({ comments }) {
+
+    if (comments != null) {
+        const comm = comments.map((comment) => {
+            return (
+                <div className="list-unstyled">
+                    <p>{comment.comment}</p>
+                    <p>-- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</p>
+                </div>
+
+            );
+        });
+        return (
+            <div>
+                <h4>Comments</h4>
+                <div>{comm}</div>
+                <CommentForm />
+            </div>
+        );
+    }
+    else {
+        return (
+            <div></div>
+        );
+    }
+}
+
+const DishDetail = (props) => {
+    if (props.dish != null) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <Breadcrumb>
+
+                        <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className="col-12">
+                        <h3>{props.dish.name}</h3>
+                        <hr />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderDish dish={props.dish} />
+                    </div>
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderComments comments={props.comments} />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    else return (
+        <div></div>
+    );
+
+}
+export default DishDetail;
+*/

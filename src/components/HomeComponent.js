@@ -3,10 +3,11 @@ import React from 'react';
 import { Card, CardBody, CardImg, CardImgOverlay, CardText, CardTitle, CardSubtitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Loading } from './LoadingComponent';
+import { baseUrl } from '../shared/baseUrl';
 
 
 function RenderCard({ item, isLoading, errMess }) {
-
+    console.log(item);
     if (isLoading) {
         return (
             <Loading />
@@ -32,7 +33,8 @@ function RenderCard({ item, isLoading, errMess }) {
 }
 
 function Home(props) {
-    
+    console.log(props.dish);
+    console.log(props.promotion);
     return (
         <div className="container">
             <div className="row">
@@ -46,8 +48,7 @@ function Home(props) {
                     <RenderCard item={props.dish} isLoading={props.dishesLoading} errMess={props.dishesErrMess} />
                 </div>
                 <div className="col-12 col-md m-1">
-                    <RenderCard item={props.promotion} />
-                </div>
+                    <RenderCard item={props.promotion} isLoading={props.promoLoading} errMess={props.promoErrMess} />                </div>
                 <div className="col-12 col-md m-1">
                     <RenderCard item={props.leader} />
                 </div>

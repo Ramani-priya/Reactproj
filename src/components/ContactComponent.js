@@ -16,11 +16,20 @@ class Contact extends Component{
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handlecancel = this.handlecancel.bind(this);
+
     }
     
     handleSubmit(values) {
         console.log("your response:" + JSON.stringify(values));
         alert("your response:" + JSON.stringify(values));
+        this.props.postFeedback( values.firstname, values.lastname, values.telnum, values.email, values.agree, values.contactType, values.message);
+        this.props.resetFeedbackForm();
+
+        //event.preventDefault();
+    }
+    handlecancel() {
+       
         this.props.resetFeedbackForm();
 
         //event.preventDefault();
@@ -184,9 +193,12 @@ class Contact extends Component{
                                     </Col>
                                 </Row>
                                 <Row className="form-group">
-                                    <Col md={{ size: 10, offset: 2 }}>
-                                        <Button type="submit" color="primary">
+                                <Col md={{ size: 10, offset: 2 }}>
+                                    <Button type="submit" className="mr-3" color="primary">
                                             Send Feedback
+                                        </Button>
+                                    <Button type="button" onClick={this.handlecancel} color="floral-white">
+                                        cancel
                                         </Button>
                                     </Col>
                                 </Row>

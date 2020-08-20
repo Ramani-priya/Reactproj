@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 
 const required = (val) => val && val.length;
@@ -55,15 +56,15 @@ class CommentForm extends Component {
                             </Row>
         
                             <Row className="form-group">
-                                <Label className="ml-3" htmlFor="authorname"><strong>Your Name</strong></Label>
+                                <Label className="ml-3" htmlFor="author"><strong>Your Name</strong></Label>
                                 <Col md={12}>
-                                    <Control.text model=".authorname" name="authorname" id="authorname"
+                                    <Control.text model=".author" name="author" id="author"
                                         placeholder="Your Name" className="form-control"
                                         validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }}
                                         />
                                     <Errors
                                         className="text-danger"
-                                        model=".authorname"
+                                        model=".author"
                                         show="touched"
                                         messages={{
                                             required: 'Required',
@@ -99,12 +100,7 @@ class CommentForm extends Component {
         );
     }
 }
-function RenderDish({ dish, isLoading, errMess, comments, postComment }) {
-    // var dish = this.props.dish;
-    console.log(dish);
-    console.log(isLoading);
-    console.log(errMess);
-
+function RenderDish({ dish, isLoading, errMess}) {
         if (isLoading) {
             return (
                 <div className="container">
@@ -125,7 +121,11 @@ function RenderDish({ dish, isLoading, errMess, comments, postComment }) {
         }
         else if (dish != null) 
             return (
-               
+                <FadeTransform
+                    in
+                    transformProps={{
+                        exitTransform: 'scale(0.5) translateY(-50%)'
+                    }}>
                 <Card>
                     <CardImg top src={baseUrl + dish.image} alt={dish.name} />
                     <CardBody>
@@ -133,7 +133,8 @@ function RenderDish({ dish, isLoading, errMess, comments, postComment }) {
                         <CardText>{dish.description}</CardText>
                     </CardBody>
                 </Card>
-                
+                </FadeTransform>
+
             );
         else
             return (
@@ -147,14 +148,19 @@ function RenderComments({ comments, postComment, dishId }) {
                 <div>
                     <h4>Comments</h4>
                     <ul className="list-unstyled">
-                        {comments.map((eachcomment) => {
+                        <Stagger in>
+                            {comments.map((eachcomment) => {
+                               
                         return (
+                            <Fade in>
                             <li key={eachcomment.id}>
                                 <p>{eachcomment.comment}</p>
                                 <p>--{eachcomment.author},&nbsp;{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(eachcomment.date)))}</p>
                             </li>
+                            </Fade>
                         );
-                        })}  
+                        })} 
+                        </Stagger>
                     </ul>
                     <CommentForm dishId={dishId} postComment={postComment} />
                 </div>
@@ -168,9 +174,7 @@ function RenderComments({ comments, postComment, dishId }) {
     }
     
 const DishDetail = (props) => {
-    console.log(props);
-    //var dishSec;
-    //var commentSec;
+    console.log(props.comments);
     if (props.dish!=null)
         return (
             <div className="container">

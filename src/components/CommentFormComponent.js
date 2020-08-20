@@ -7,12 +7,12 @@ class CommentForm extends Component {
         super(props);
         
         this.state = {
-            authorname: '',
+            author: '',
             rating: 1,
             comment: '',
             isModalOpen: false,
             touched: {
-                authorname: false,
+                author: false,
                 comment:false
             }
         }
@@ -39,22 +39,22 @@ class CommentForm extends Component {
             isModalOpen: !this.state.isModalOpen
         });
     }
-    validate(authorname, comment) {
+    validate(author, comment) {
         const errors = {
-            authorname: '',
+            author: '',
             comment:''
         }
-        if (this.state.touched.authorname && authorname.length < 3)
-            errors.authorname = "Name should contain more than 3 characters";
-        else if (this.state.touched.authorname && authorname.length > 10)
-            errors.authorname = "Name cannot have more than 10 characters";
+        if (this.state.touched.author && author.length < 3)
+            errors.author = "Name should contain more than 3 characters";
+        else if (this.state.touched.author && author.length > 10)
+            errors.author = "Name cannot have more than 10 characters";
         if (this.state.touched.comment && comment.length < 1)
             errors.comment = "Comment contain atleast 1 character";
         
         return errors;
     }
     render() {
-        const errors = this.validate(this.state.authorname, this.state.comment);
+        const errors = this.validate(this.state.author, this.state.comment);
         
         return (
             <div className="col-12">
@@ -77,15 +77,15 @@ class CommentForm extends Component {
                             </FormGroup>
                          
                         <FormGroup>
-                            <Label htmlFor="authorname">Your Name</Label>
-                                <Input type="text" name="authorname" id="authorname"
+                            <Label htmlFor="author">Your Name</Label>
+                                <Input type="text" name="author" id="author"
                                     placeholder="Your Name"
-                                    value={this.state.authorname} 
-                                    valid={errors.authorname === ''}
-                                    invalid={errors.authorname !== ''}
-                                    onBlur={this.handleBlur('authorname')}
+                                    value={this.state.author} 
+                                    valid={errors.author === ''}
+                                    invalid={errors.author !== ''}
+                                    onBlur={this.handleBlur('author')}
                                     onChange={this.handleInputChange} />
-                                <FormFeedback>{errors.authorname}</FormFeedback>
+                                <FormFeedback>{errors.author}</FormFeedback>
                             </FormGroup>
                             <FormGroup>
                                 <Label htmlFor="comment">Your Comment</Label>

@@ -2,12 +2,16 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger} from 'react-animation-components';
 
 function RenderLeader({leader }) {
     return (
-        <Media className="row">
+        
+            <Media className="row">
+               
             <Media left>
-                    <Media object className="mr-3 mt-1" src={leader.image} alt={leader.name}/>
+                <Media object className="mr-3 mt-1" src={baseUrl + leader.image} alt={leader.name}/>
             </Media>
             <Media body>
                 <Media heading>
@@ -15,20 +19,14 @@ function RenderLeader({leader }) {
                 </Media>
                 <p>{leader.designation}</p>
                 <p>{leader.description}</p>
+                    </Media>
+             
             </Media>
-        </Media>
+         
         );
 }
 function About(props) {
-
-    const leaders = props.leaders.map((leader) => {
-        return (
-            <div className="col-12 m-1" key={leader.id}>
-                <RenderLeader leader={leader}/>
-            </div>
-        );
-    });
-
+  
     return(
         <div className="container">
             <div className="row">
@@ -48,6 +46,11 @@ function About(props) {
                     <p>The restaurant traces its humble beginnings to <em>The Frying Pan</em>, a successful chain started by our CEO, Mr. Peter Pan, that featured for the first time the world's best cuisines in a pan.</p>
                 </div>
                 <div className="col-12 col-md-5">
+                    <FadeTransform
+                        in
+                        transformProps={{
+                            exitTransform: 'scale(0.5) translateY(-50%)'
+                        }}>
                     <Card>
                         <CardHeader className="bg-primary text-white">Facts At a Glance</CardHeader>
                         <CardBody>
@@ -62,9 +65,15 @@ function About(props) {
                                 <dd className="col-6">40</dd>
                             </dl>
                         </CardBody>
-                    </Card>
+                        </Card>
+                    </FadeTransform>
                 </div>
                 <div className="col-12">
+                    <FadeTransform
+                        in
+                        transformProps={{
+                            exitTransform: 'scale(0.5) translateY(-50%)'
+                        }}>
                     <Card>
                         <CardBody className="bg-faded">
                             <blockquote className="blockquote">
@@ -76,7 +85,8 @@ function About(props) {
                                 </footer>
                             </blockquote>
                         </CardBody>
-                    </Card>
+                        </Card>
+                    </FadeTransform>
                 </div>
             </div>
             <div className="row row-content">
@@ -84,9 +94,22 @@ function About(props) {
                     <h2>Corporate Leadership</h2>
                 </div>
                 <div className="col-12">
+                    
                     <Media list>
-                        {leaders}
+                        <Stagger in>
+                            {props.leaders.leaders.map((leader) => {
+                                return (
+                                    <Fade in>
+                                    <div className="col-12 m-1" key={leader.id}>
+                                            <RenderLeader leader={leader} />
+                                    </div>
+                                    </Fade>
+                            );
+                            })}
+                        </Stagger>
                     </Media>
+                   
+
                 </div>
             </div>
         </div>
